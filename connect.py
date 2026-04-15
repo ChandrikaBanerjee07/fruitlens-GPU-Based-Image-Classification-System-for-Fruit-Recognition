@@ -28,21 +28,39 @@ def home():
     return "FruitLens backend is running"
 @app.route("/predict", methods=["POST"])
 def predict():
-    if "file" not in request.files:
-        return jsonify({"error": "No file uploaded"}), 400
+    try:
+        print("Request received")
 
-    image_bytes = request.files["file"].read()
-    arr = preprocess_image(image_bytes)
-    preds = model.predict(arr, verbose=0)[0]
+        if "file" not in request.files:
+            print("No file uploaded")
+            return jsonify({"error": "No file uploaded"}), 400
 
-    top_k_idx = np.argsort(preds)[::-1][:5]
-    top_k = [{"label": class_names[i], "score": float(preds[i])} for i in top_k_idx]
+        image_file = request.files["file"]
+        image_bytes = image_file.read()
+        print("File received")
 
-    return jsonify({
-        "prediction": class_names[int(np.argmax(preds))],
-        "confidence": float(np.max(preds)),
-        "top_k": top_k
-    })
+        arr = preprocess_image(image_bytes)
+        print("Image preprocessed")
+
+        preds = model.predict(arr, verbose=0)[0]
+        print("Prediction done")
+
+        top_k_idx = np.argsort(preds)[::-1][:5]
+        top_k = [{"label": class_names[i], "score": float(preds[i])} for i in top_k_idx]
+
+        result = {
+            "prediction": class_names[int(np.argmax(preds))],
+            "confidence": float(np.max(preds)),
+            "top_k": top_k
+        }
+
+        print("Sending response:", result)
+        return jsonify(result)
+
+    except Exception as e:
+        print("Prediction error:", str(e))
+        return jsonify({"error": str(e)}), 500
+
 
 
 if __name__ == "__main__":
