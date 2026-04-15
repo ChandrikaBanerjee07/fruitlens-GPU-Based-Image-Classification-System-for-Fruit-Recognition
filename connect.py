@@ -23,27 +23,21 @@ def preprocess_image(image_bytes):
     arr = np.expand_dims(arr, axis=0)
     return arr
 
+@app.route("/", methods=["GET"])
+def home():
+    return "FruitLens backend is running"
 @app.route("/predict", methods=["POST"])
 def predict():
-    print("Request received")
-
     if "file" not in request.files:
-        print("No file uploaded")
         return jsonify({"error": "No file uploaded"}), 400
 
     image_bytes = request.files["file"].read()
-    print("File read successfully")
-
     arr = preprocess_image(image_bytes)
-    print("Image preprocessed")
-
     preds = model.predict(arr, verbose=0)[0]
-    print("Prediction done")
 
     top_k_idx = np.argsort(preds)[::-1][:5]
     top_k = [{"label": class_names[i], "score": float(preds[i])} for i in top_k_idx]
 
-    print("Sending response")
     return jsonify({
         "prediction": class_names[int(np.argmax(preds))],
         "confidence": float(np.max(preds)),
