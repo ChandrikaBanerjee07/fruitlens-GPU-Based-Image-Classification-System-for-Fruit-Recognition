@@ -13,6 +13,7 @@
     --border: #2a2a2a;
     --accent: #d4ff4e;
     --accent2: #ff6b35;
+    --error: #ff4d4d;
     --text: #f0f0f0;
     --muted: #666;
     --radius: 16px;
@@ -28,499 +29,254 @@
     overflow-x: hidden;
   }
 
-  /* Background grid */
   body::before {
     content: '';
-    position: fixed;
-    inset: 0;
+    position: fixed; inset: 0;
     background-image:
       linear-gradient(rgba(212,255,78,0.04) 1px, transparent 1px),
       linear-gradient(90deg, rgba(212,255,78,0.04) 1px, transparent 1px);
     background-size: 48px 48px;
-    pointer-events: none;
-    z-index: 0;
+    pointer-events: none; z-index: 0;
   }
 
   .page {
-    position: relative;
-    z-index: 1;
-    max-width: 900px;
-    margin: 0 auto;
+    position: relative; z-index: 1;
+    max-width: 900px; margin: 0 auto;
     padding: 40px 24px 80px;
   }
 
-  /* Header */
   header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    display: flex; align-items: center; justify-content: space-between;
     margin-bottom: 64px;
     animation: fadeDown 0.6s ease both;
   }
 
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
+  .logo { display: flex; align-items: center; gap: 12px; }
   .logo-icon {
-    width: 40px; height: 40px;
-    background: var(--accent);
-    border-radius: 10px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 22px;
-    box-shadow: 0 0 20px rgba(212,255,78,0.4);
+    width: 40px; height: 40px; background: var(--accent);
+    border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    font-size: 22px; box-shadow: 0 0 20px rgba(212,255,78,0.4);
   }
-
-  .logo-text {
-    font-size: 20px;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-  }
-
+  .logo-text { font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
   .logo-text span { color: var(--accent); }
 
+  .header-right { display: flex; align-items: center; gap: 10px; }
+
   .badge {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    padding: 5px 12px;
-    border: 1px solid var(--border);
-    border-radius: 100px;
-    color: var(--muted);
-    letter-spacing: 1px;
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    padding: 5px 12px; border: 1px solid var(--border);
+    border-radius: 100px; color: var(--muted); letter-spacing: 1px;
   }
 
-  /* Hero */
-  .hero {
-    margin-bottom: 56px;
-    animation: fadeDown 0.6s 0.1s ease both;
+  /* Wake-up indicator */
+  #wakeStatus {
+    display: none;
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    padding: 5px 12px; border-radius: 100px;
+    letter-spacing: 1px; align-items: center; gap: 6px;
   }
+  #wakeStatus.waking  { display: flex; border: 1px solid #ff9800; color: #ff9800; }
+  #wakeStatus.ready   { display: flex; border: 1px solid var(--accent); color: var(--accent); }
+  #wakeStatus.error   { display: flex; border: 1px solid var(--error); color: var(--error); }
 
+  .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: currentColor;
+    animation: pulse 1.2s ease infinite;
+  }
+  .dot.static { animation: none; }
+
+  .hero { margin-bottom: 56px; animation: fadeDown 0.6s 0.1s ease both; }
   .hero h1 {
-    font-size: clamp(38px, 8vw, 72px);
-    font-weight: 800;
-    line-height: 0.95;
-    letter-spacing: -2px;
-    margin-bottom: 20px;
+    font-size: clamp(38px, 8vw, 72px); font-weight: 800;
+    line-height: 0.95; letter-spacing: -2px; margin-bottom: 20px;
   }
-
-  .hero h1 .highlight {
-    color: var(--accent);
-    display: inline-block;
-    position: relative;
-  }
-
+  .hero h1 .highlight { color: var(--accent); display: inline-block; position: relative; }
   .hero h1 .highlight::after {
-    content: '';
-    position: absolute;
-    bottom: 2px; left: 0; right: 0;
-    height: 3px;
-    background: var(--accent);
-    border-radius: 2px;
-    opacity: 0.4;
+    content: ''; position: absolute; bottom: 2px; left: 0; right: 0;
+    height: 3px; background: var(--accent); border-radius: 2px; opacity: 0.4;
   }
-
   .hero p {
-    font-size: 16px;
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    font-weight: 300;
-    max-width: 480px;
-    line-height: 1.7;
+    font-size: 16px; color: var(--muted);
+    font-family: 'DM Mono', monospace; font-weight: 300;
+    max-width: 480px; line-height: 1.7;
   }
 
-  /* Upload Zone */
   .upload-zone {
-    border: 2px dashed var(--border);
-    border-radius: var(--radius);
-    background: var(--surface);
-    padding: 60px 32px;
-    text-align: center;
-    cursor: pointer;
-    transition: border-color 0.2s, background 0.2s, transform 0.2s;
-    position: relative;
-    overflow: hidden;
+    border: 2px dashed var(--border); border-radius: var(--radius);
+    background: var(--surface); padding: 60px 32px; text-align: center;
+    cursor: pointer; transition: border-color 0.2s, background 0.2s, transform 0.2s;
+    position: relative; overflow: hidden;
     animation: fadeUp 0.6s 0.2s ease both;
   }
-
   .upload-zone::before {
-    content: '';
-    position: absolute;
-    inset: 0;
+    content: ''; position: absolute; inset: 0;
     background: radial-gradient(ellipse at center, rgba(212,255,78,0.04) 0%, transparent 70%);
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s;
+    pointer-events: none; opacity: 0; transition: opacity 0.3s;
   }
-
-  .upload-zone:hover,
-  .upload-zone.drag-over {
-    border-color: var(--accent);
-    background: #161f00;
-    transform: translateY(-2px);
+  .upload-zone:hover, .upload-zone.drag-over {
+    border-color: var(--accent); background: #161f00; transform: translateY(-2px);
   }
-
-  .upload-zone:hover::before,
-  .upload-zone.drag-over::before { opacity: 1; }
-
+  .upload-zone:hover::before, .upload-zone.drag-over::before { opacity: 1; }
   .upload-zone.drag-over { border-style: solid; }
-
-  .upload-icon {
-    font-size: 52px;
-    margin-bottom: 16px;
-    display: block;
-    filter: grayscale(0.3);
+  .upload-icon { font-size: 52px; margin-bottom: 16px; display: block; }
+  .upload-zone h2 { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+  .upload-zone > p {
+    font-size: 13px; color: var(--muted);
+    font-family: 'DM Mono', monospace; margin-bottom: 24px;
   }
-
-  .upload-zone h2 {
-    font-size: 20px;
-    font-weight: 700;
-    margin-bottom: 8px;
-  }
-
-  .upload-zone p {
-    font-size: 13px;
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    margin-bottom: 24px;
-  }
-
   .upload-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: var(--accent);
-    color: #0a0a0a;
-    border: none;
-    border-radius: 8px;
-    padding: 12px 28px;
-    font-family: 'Syne', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: transform 0.15s, box-shadow 0.15s;
-    letter-spacing: 0.3px;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent); color: #0a0a0a; border: none; border-radius: 8px;
+    padding: 12px 28px; font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700;
+    cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; letter-spacing: 0.3px;
   }
-
-  .upload-btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 20px rgba(212,255,78,0.35);
-  }
-
+  .upload-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(212,255,78,0.35); }
   #fileInput { display: none; }
 
-  /* Preview & Result */
   .result-panel {
-    display: none;
-    margin-top: 32px;
-    gap: 24px;
+    display: none; margin-top: 32px; gap: 24px;
     animation: fadeUp 0.5s ease both;
   }
-
   .result-panel.visible {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: grid; grid-template-columns: 1fr 1fr;
   }
-
-  @media (max-width: 600px) {
-    .result-panel.visible { grid-template-columns: 1fr; }
-  }
+  @media (max-width: 600px) { .result-panel.visible { grid-template-columns: 1fr; } }
 
   .preview-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-    position: relative;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden; position: relative;
   }
-
   .preview-card img {
-    width: 100%;
-    aspect-ratio: 1;
-    object-fit: cover;
-    display: block;
+    width: 100%; aspect-ratio: 1; object-fit: cover; display: block;
   }
-
   .preview-label {
-    position: absolute;
-    bottom: 12px; left: 12px;
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    background: rgba(0,0,0,0.8);
-    padding: 4px 10px;
-    border-radius: 6px;
-    color: var(--muted);
-    letter-spacing: 1px;
+    position: absolute; bottom: 12px; left: 12px;
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    background: rgba(0,0,0,0.8); padding: 4px 10px; border-radius: 6px;
+    color: var(--muted); letter-spacing: 1px;
   }
 
   .prediction-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 28px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 28px;
+    display: flex; flex-direction: column; justify-content: space-between;
   }
 
+  /* Loading state */
   .prediction-loading {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    gap: 16px;
-    min-height: 200px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    height: 100%; gap: 12px; min-height: 200px;
   }
-
   .spinner {
-    width: 40px; height: 40px;
-    border: 3px solid var(--border);
-    border-top-color: var(--accent);
-    border-radius: 50%;
+    width: 40px; height: 40px; border: 3px solid var(--border);
+    border-top-color: var(--accent); border-radius: 50%;
     animation: spin 0.8s linear infinite;
   }
+  .loading-msg {
+    font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted);
+    text-align: center; line-height: 1.6;
+  }
 
+  /* Error state */
+  .prediction-error {
+    display: none; flex-direction: column;
+    align-items: center; justify-content: center;
+    height: 100%; gap: 16px; min-height: 200px;
+  }
+  .prediction-error.visible { display: flex; }
+  .error-icon { font-size: 36px; }
+  .error-title { font-size: 16px; font-weight: 700; color: var(--error); }
+  .error-msg {
+    font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted);
+    text-align: center; line-height: 1.7; max-width: 220px;
+  }
+
+  /* Result state */
   .prediction-result { display: none; }
   .prediction-result.visible { display: block; }
 
   .pred-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    margin-bottom: 10px;
+    font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted);
+    letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px;
   }
-
   .pred-name {
-    font-size: 42px;
-    font-weight: 800;
-    letter-spacing: -1.5px;
-    color: var(--accent);
-    text-transform: capitalize;
-    margin-bottom: 4px;
-    line-height: 1;
+    font-size: 42px; font-weight: 800; letter-spacing: -1.5px;
+    color: var(--accent); text-transform: capitalize;
+    margin-bottom: 4px; line-height: 1;
   }
-
-  .pred-conf {
-    font-family: 'DM Mono', monospace;
-    font-size: 14px;
-    color: var(--muted);
-    margin-bottom: 28px;
-  }
-
+  .pred-conf { font-family: 'DM Mono', monospace; font-size: 14px; color: var(--muted); margin-bottom: 28px; }
   .bars-label {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
-    margin-bottom: 12px;
+    font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted);
+    letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px;
   }
-
-  .bar-row {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 8px;
-  }
-
+  .bar-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
   .bar-name {
-    font-size: 12px;
-    font-weight: 600;
-    width: 90px;
-    text-transform: capitalize;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    flex-shrink: 0;
+    font-size: 12px; font-weight: 600; width: 90px;
+    text-transform: capitalize; white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis; flex-shrink: 0;
   }
-
-  .bar-track {
-    flex: 1;
-    height: 6px;
-    background: var(--border);
-    border-radius: 3px;
-    overflow: hidden;
-  }
-
+  .bar-track { flex: 1; height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; }
   .bar-fill {
-    height: 100%;
-    border-radius: 3px;
-    background: var(--border);
-    width: 0;
-    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 100%; border-radius: 3px; background: var(--border);
+    width: 0; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
   }
-
-  .bar-fill.top { background: var(--accent); }
+  .bar-fill.top    { background: var(--accent); }
   .bar-fill.second { background: var(--accent2); }
-
   .bar-pct {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--muted);
-    width: 38px;
-    text-align: right;
-    flex-shrink: 0;
+    font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted);
+    width: 38px; text-align: right; flex-shrink: 0;
   }
 
-  /* Reset button */
   .reset-btn {
-    display: block;
-    width: 100%;
-    margin-top: 24px;
-    padding: 12px;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--muted);
-    font-family: 'Syne', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: border-color 0.2s, color 0.2s;
-    letter-spacing: 0.5px;
+    display: block; width: 100%; margin-top: 24px; padding: 12px;
+    background: transparent; border: 1px solid var(--border); border-radius: 8px;
+    color: var(--muted); font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: border-color 0.2s, color 0.2s; letter-spacing: 0.5px;
   }
-
   .reset-btn:hover { border-color: var(--text); color: var(--text); }
 
-  /* Supported fruits */
-  .fruits-section {
-    margin-top: 48px;
-    animation: fadeUp 0.6s 0.3s ease both;
-  }
-
+  .fruits-section { margin-top: 48px; animation: fadeUp 0.6s 0.3s ease both; }
   .section-title {
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    letter-spacing: 2px;
-    color: var(--muted);
-    text-transform: uppercase;
-    margin-bottom: 16px;
+    font-family: 'DM Mono', monospace; font-size: 11px;
+    letter-spacing: 2px; color: var(--muted);
+    text-transform: uppercase; margin-bottom: 16px;
   }
-
-  .fruits-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
+  .fruits-grid { display: flex; flex-wrap: wrap; gap: 8px; }
   .fruit-chip {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 14px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 100px;
-    font-size: 13px;
-    font-weight: 600;
+    display: flex; align-items: center; gap: 6px;
+    padding: 6px 14px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: 100px;
+    font-size: 13px; font-weight: 600;
     transition: border-color 0.2s, background 0.2s;
   }
-
   .fruit-chip:hover { border-color: var(--accent); background: #161f00; }
 
-  /* Info box */
-  .info-box {
-    margin-top: 48px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--accent2);
-    border-radius: var(--radius);
-    padding: 20px 24px;
-    animation: fadeUp 0.6s 0.4s ease both;
+  /* Render cold-start banner */
+  .cold-start-banner {
+    margin-top: 24px; padding: 16px 20px;
+    background: #1a1200; border: 1px solid #3d2e00;
+    border-left: 3px solid #ff9800; border-radius: var(--radius);
+    font-family: 'DM Mono', monospace; font-size: 12px; color: #cc8800;
+    display: none; line-height: 1.7; animation: fadeUp 0.4s ease both;
   }
+  .cold-start-banner.visible { display: block; }
+  .cold-start-banner strong { color: #ff9800; display: block; margin-bottom: 4px; }
 
-  .info-box h3 {
-    font-size: 14px;
-    font-weight: 700;
-    margin-bottom: 10px;
-    color: var(--accent2);
-  }
-
-  .info-box ul {
-    list-style: none;
-    padding: 0;
-  }
-
-  .info-box li {
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    color: var(--muted);
-    padding: 4px 0;
-    display: flex;
-    gap: 10px;
-  }
-
-  .info-box li::before { content: '→'; color: var(--accent2); }
-
-  /* Footer */
   footer {
-    margin-top: 64px;
-    text-align: center;
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: #333;
-    letter-spacing: 1px;
-    animation: fadeUp 0.6s 0.5s ease both;
+    margin-top: 64px; text-align: center;
+    font-family: 'DM Mono', monospace; font-size: 11px; color: #333;
+    letter-spacing: 1px; animation: fadeUp 0.6s 0.5s ease both;
   }
 
-  /* Keyframes */
-  @keyframes fadeDown {
-    from { opacity: 0; transform: translateY(-16px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(16px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-
-  /* ── IMPORTANT: backend note overlay ── */
-  .backend-note {
-    position: fixed;
-    bottom: 24px; right: 24px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--accent);
-    border-radius: 12px;
-    padding: 16px 20px;
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: var(--muted);
-    max-width: 280px;
-    z-index: 100;
-    line-height: 1.6;
-  }
-
-  .backend-note strong {
-    display: block;
-    color: var(--accent);
-    margin-bottom: 6px;
-    letter-spacing: 1px;
-  }
-
-  .close-note {
-    position: absolute;
-    top: 8px; right: 10px;
-    cursor: pointer;
-    color: var(--muted);
-    font-size: 14px;
-    background: none;
-    border: none;
-    color: var(--muted);
-    cursor: pointer;
-  }
+  @keyframes fadeDown  { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: none; } }
+  @keyframes fadeUp    { from { opacity: 0; transform: translateY(16px);  } to { opacity: 1; transform: none; } }
+  @keyframes spin      { to { transform: rotate(360deg); } }
+  @keyframes pulse     { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 </style>
 </head>
 <body>
-
 <div class="page">
 
   <header>
@@ -528,7 +284,13 @@
       <div class="logo-icon">🍎</div>
       <div class="logo-text">Fruit<span>Lens</span></div>
     </div>
-    <div class="badge">MobileNetV2 · GPU</div>
+    <div class="header-right">
+      <div id="wakeStatus">
+        <div class="dot" id="wakeDot"></div>
+        <span id="wakeText">Waking server…</span>
+      </div>
+      <div class="badge">MobileNetV2 · GPU</div>
+    </div>
   </header>
 
   <div class="hero">
@@ -536,14 +298,20 @@
     <p>Upload a photo. Our fine-tuned MobileNetV2 model tells you exactly what it is — with confidence scores.</p>
   </div>
 
+  <!-- Cold-start notice -->
+  <div class="cold-start-banner" id="coldBanner">
+    <strong>⏳ SERVER WAKING UP</strong>
+    Render free tier sleeps after 15 min of inactivity. First request may take 30–60 seconds. Please wait…
+  </div>
+
   <div class="upload-zone" id="uploadZone">
     <span class="upload-icon">📸</span>
     <h2>Drop your fruit image here</h2>
-    <p>JPG, PNG, WEBP · max 10MB</p>
+    <p>JPG, PNG, WEBP · max 10 MB</p>
     <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
       Choose Image
     </button>
-    <input type="file" id="fileInput" accept="image/*">
+    <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp">
   </div>
 
   <div class="result-panel" id="resultPanel">
@@ -551,12 +319,20 @@
       <img id="previewImg" src="" alt="Uploaded fruit">
       <div class="preview-label">INPUT IMAGE</div>
     </div>
-
     <div class="prediction-card">
+      <!-- Loading -->
       <div class="prediction-loading" id="loadingState">
         <div class="spinner"></div>
-        <span style="font-family:'DM Mono',monospace;font-size:12px;color:var(--muted)">Analysing...</span>
+        <div class="loading-msg" id="loadingMsg">Sending to model…</div>
       </div>
+      <!-- Error -->
+      <div class="prediction-error" id="errorState">
+        <div class="error-icon">⚠️</div>
+        <div class="error-title">Prediction Failed</div>
+        <div class="error-msg" id="errorMsg">Unknown error.</div>
+        <button class="reset-btn" onclick="resetUI()" style="width:auto;padding:8px 20px;">Try Again</button>
+      </div>
+      <!-- Result -->
       <div class="prediction-result" id="predResult">
         <div class="pred-label">Detected Fruit</div>
         <div class="pred-name" id="predName">—</div>
@@ -573,150 +349,228 @@
     <div class="fruits-grid" id="fruitsGrid"></div>
   </div>
 
-
-
-  <footer>FRUITLENS · MOBILENETV2 · TENSORFLOW · GPU-ACCELERATED</footer>
+  <footer>FRUITLENS · MOBILENETV2 · TENSORFLOW · RENDER + NETLIFY</footer>
 </div>
 
-
-
 <script>
-// ─────────────────────────────────────────────
-// CONFIG — change this to your Flask/FastAPI URL
-// ─────────────────────────────────────────────
-const API_URL = 'http://127.0.0.1:5000/predict';
+// ─────────────────────────────────────────────────────────────────
+// ✅  FIXED: pointing to your actual Render backend
+// ─────────────────────────────────────────────────────────────────
+const API_URL    = "https://fruitlens-gpu-based-image-classification.onrender.com/predict";
+const HEALTH_URL = "https://fruitlens-gpu-based-image-classification.onrender.com/health";
 
 const FRUITS = [
-  { name: 'Apple',       emoji: '🍎' },
-  { name: 'Avocado',     emoji: '🥑' },
-  { name: 'Banana',      emoji: '🍌' },
-  { name: 'Cherry',      emoji: '🍒' },
-  { name: 'Kiwi',        emoji: '🥝' },
-  { name: 'Mango',       emoji: '🥭' },
-  { name: 'Orange',      emoji: '🍊' },
-  { name: 'Pineapple',   emoji: '🍍' },
-  { name: 'Strawberry',  emoji: '🍓' },
-  { name: 'Watermelon',  emoji: '🍉' },
+  { name: "Apple",      emoji: "🍎" },
+  { name: "Avocado",    emoji: "🥑" },
+  { name: "Banana",     emoji: "🍌" },
+  { name: "Cherry",     emoji: "🍒" },
+  { name: "Kiwi",       emoji: "🥝" },
+  { name: "Mango",      emoji: "🥭" },
+  { name: "Orange",     emoji: "🍊" },
+  { name: "Pineapple",  emoji: "🍍" },
+  { name: "Strawberry", emoji: "🍓" },
+  { name: "Watermelon", emoji: "🍉" },
 ];
 
 // Populate fruit chips
-const grid = document.getElementById('fruitsGrid');
+const grid = document.getElementById("fruitsGrid");
 FRUITS.forEach(f => {
-  const chip = document.createElement('div');
-  chip.className = 'fruit-chip';
+  const chip = document.createElement("div");
+  chip.className = "fruit-chip";
   chip.innerHTML = `<span>${f.emoji}</span> ${f.name}`;
   grid.appendChild(chip);
 });
 
-// Drag & drop
-const zone = document.getElementById('uploadZone');
-zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('drag-over'); });
-zone.addEventListener('dragleave', () => zone.classList.remove('drag-over'));
-zone.addEventListener('drop', e => {
-  e.preventDefault();
-  zone.classList.remove('drag-over');
-  const file = e.dataTransfer.files[0];
-  if (file && file.type.startsWith('image/')) handleFile(file);
-});
+// ─── Wake up Render server on page load ──────────────────────────
+const wakeStatus = document.getElementById("wakeStatus");
+const wakeDot    = document.getElementById("wakeDot");
+const wakeText   = document.getElementById("wakeText");
+const coldBanner = document.getElementById("coldBanner");
+let serverReady  = false;
+let wakeStarted  = Date.now();
 
-document.getElementById('fileInput').addEventListener('change', e => {
+async function wakeServer() {
+  wakeStatus.className = "waking";
+  wakeText.textContent = "Waking server…";
+  wakeDot.className    = "dot";
+
+  const TIMEOUT = 90_000;  // 90 s max
+
+  while (Date.now() - wakeStarted < TIMEOUT) {
+    try {
+      const res = await fetch(HEALTH_URL, { method: "GET" });
+      if (res.ok) {
+        serverReady = true;
+        wakeStatus.className = "ready";
+        wakeDot.className    = "dot static";
+        wakeText.textContent = "Server ready";
+        coldBanner.classList.remove("visible");
+        setTimeout(() => { wakeStatus.className = ""; }, 3000);
+        return;
+      }
+    } catch (_) { /* still waking */ }
+
+    // Show cold-start banner after 3 s
+    if (Date.now() - wakeStarted > 3000) {
+      coldBanner.classList.add("visible");
+    }
+    await sleep(4000);
+  }
+
+  // Timeout — let user try anyway
+  serverReady = true;
+  wakeStatus.className = "";
+  coldBanner.classList.remove("visible");
+}
+
+wakeServer();
+
+// ─── Drag & drop ─────────────────────────────────────────────────
+const zone = document.getElementById("uploadZone");
+zone.addEventListener("dragover",  e => { e.preventDefault(); zone.classList.add("drag-over"); });
+zone.addEventListener("dragleave", () => zone.classList.remove("drag-over"));
+zone.addEventListener("drop", e => {
+  e.preventDefault();
+  zone.classList.remove("drag-over");
+  const file = e.dataTransfer.files[0];
+  if (file && file.type.startsWith("image/")) handleFile(file);
+});
+document.getElementById("fileInput").addEventListener("change", e => {
   if (e.target.files[0]) handleFile(e.target.files[0]);
 });
 
+// ─── Handle file ─────────────────────────────────────────────────
 function handleFile(file) {
+  if (file.size > 10 * 1024 * 1024) {
+    alert("Image must be smaller than 10 MB.");
+    return;
+  }
   const reader = new FileReader();
   reader.onload = e => {
-    document.getElementById('previewImg').src = e.target.result;
+    document.getElementById("previewImg").src = e.target.result;
     showPanel();
-    callAPI(file, e.target.result);
+    callAPI(file);
   };
   reader.readAsDataURL(file);
 }
 
 function showPanel() {
-  const panel = document.getElementById('resultPanel');
-  panel.classList.add('visible');
-  document.getElementById('loadingState').style.display = 'flex';
-  document.getElementById('predResult').classList.remove('visible');
-  document.getElementById('uploadZone').style.display = 'none';
+  const panel = document.getElementById("resultPanel");
+  panel.classList.add("visible");
+  document.getElementById("loadingState").style.display  = "flex";
+  document.getElementById("errorState").classList.remove("visible");
+  document.getElementById("predResult").classList.remove("visible");
+  document.getElementById("uploadZone").style.display    = "none";
+  coldBanner.classList.remove("visible");
 }
 
 function resetUI() {
-  document.getElementById('resultPanel').classList.remove('visible');
-  document.getElementById('uploadZone').style.display = '';
-  document.getElementById('fileInput').value = '';
+  document.getElementById("resultPanel").classList.remove("visible");
+  document.getElementById("uploadZone").style.display = "";
+  document.getElementById("fileInput").value = "";
 }
 
-async function callAPI(file, dataUrl) {
+// ─── Call backend ─────────────────────────────────────────────────
+async function callAPI(file) {
+  setLoading("Sending to model…");
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  // If server isn't confirmed ready yet, wait a bit more
+  if (!serverReady) {
+    setLoading("Waiting for server to wake up…\n(Render free tier may take up to 60 s)");
+    await waitForServer();
+  }
+
   try {
-    const formData = new FormData();
-    formData.append('file', file);
+    setLoading("Analysing image…");
 
-    const response = await fetch(API_URL, { method: 'POST', body: formData });
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 120_000);  // 2 min timeout
 
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const response = await fetch(API_URL, {
+      method: "POST",
+      body: formData,
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+
+    if (!response.ok) {
+      const errData = await response.json().catch(() => ({}));
+      throw new Error(errData.error || `Server error ${response.status}`);
+    }
+
     const data = await response.json();
     showResult(data);
+
   } catch (err) {
-  console.error('Prediction failed:', err);
-  alert('Prediction failed. Check terminal.');}
-  
+    let msg = err.message;
+    if (err.name === "AbortError") {
+      msg = "Request timed out (>2 min). The server may be overloaded. Try again.";
+    } else if (msg.includes("Failed to fetch") || msg.includes("NetworkError")) {
+      msg = "Cannot reach the backend.\n\nMake sure:\n• Render service is deployed\n• CORS is enabled\n• API_URL is correct in this file";
+    }
+    showError(msg);
+  }
 }
 
-function simulatePrediction(dataUrl) {
-  // Demo: picks a fruit name randomly for visual preview
-  // In production this comes from your API
-  setTimeout(() => {
-    const demo = FRUITS[Math.floor(Math.random() * FRUITS.length)];
-    const topK = generateFakeTopK(demo.name);
-    showResult({ prediction: demo.name.toLowerCase(), confidence: topK[0].score, top_k: topK });
-  }, 1200);
+async function waitForServer(maxMs = 60_000) {
+  const start = Date.now();
+  while (!serverReady && Date.now() - start < maxMs) {
+    await sleep(2000);
+  }
 }
 
-function generateFakeTopK(winner) {
-  const pool = [...FRUITS].sort(() => Math.random() - 0.5).slice(0, 3);
-  if (!pool.find(f => f.name === winner)) pool[0] = FRUITS.find(f => f.name === winner) || pool[0];
-  const scores = [0.75 + Math.random() * 0.2, 0.05 + Math.random() * 0.1, Math.random() * 0.05];
-  const sum = scores.reduce((a, b) => a + b, 0);
-  return pool.map((f, i) => ({
-    label: (i === 0 ? winner : f.name).toLowerCase(),
-    score: scores[i] / sum
-  })).sort((a, b) => b.score - a.score);
+// ─── UI helpers ──────────────────────────────────────────────────
+function setLoading(msg) {
+  document.getElementById("loadingState").style.display = "flex";
+  document.getElementById("loadingMsg").textContent = msg;
+  document.getElementById("errorState").classList.remove("visible");
+  document.getElementById("predResult").classList.remove("visible");
+}
+
+function showError(msg) {
+  document.getElementById("loadingState").style.display = "none";
+  document.getElementById("errorMsg").textContent = msg;
+  document.getElementById("errorState").classList.add("visible");
 }
 
 function showResult(data) {
-  // data shape: { prediction: "apple", confidence: 0.98, top_k: [{label, score}, ...] }
-  document.getElementById('loadingState').style.display = 'none';
+  // data: { prediction, confidence, top_k: [{label, score}] }
+  document.getElementById("loadingState").style.display = "none";
+  document.getElementById("errorState").classList.remove("visible");
 
-  const name = capitalize(data.prediction || (data.top_k && data.top_k[0].label) || 'Unknown');
-  const conf = data.confidence ?? (data.top_k && data.top_k[0].score) ?? 0;
+  const name = capitalize(data.prediction || (data.top_k?.[0]?.label) || "Unknown");
+  const conf = data.confidence ?? data.top_k?.[0]?.score ?? 0;
 
-  document.getElementById('predName').textContent = name;
-  document.getElementById('predConf').textContent = `${(conf * 100).toFixed(1)}% confidence`;
+  document.getElementById("predName").textContent = name;
+  document.getElementById("predConf").textContent = `${(conf * 100).toFixed(1)}% confidence`;
 
-  // Bars
-  const container = document.getElementById('barsContainer');
-  container.innerHTML = '';
+  const container = document.getElementById("barsContainer");
+  container.innerHTML = "";
   const topK = data.top_k || [{ label: data.prediction, score: data.confidence }];
 
   topK.slice(0, 5).forEach((item, idx) => {
     const pct = (item.score * 100).toFixed(1);
-    const row = document.createElement('div');
-    row.className = 'bar-row';
+    const row = document.createElement("div");
+    row.className = "bar-row";
     row.innerHTML = `
       <div class="bar-name">${capitalize(item.label)}</div>
-      <div class="bar-track"><div class="bar-fill ${idx === 0 ? 'top' : idx === 1 ? 'second' : ''}" data-w="${item.score * 100}"></div></div>
-      <div class="bar-pct">${pct}%</div>
-    `;
+      <div class="bar-track">
+        <div class="bar-fill ${idx === 0 ? "top" : idx === 1 ? "second" : ""}"
+             data-w="${item.score * 100}"></div>
+      </div>
+      <div class="bar-pct">${pct}%</div>`;
     container.appendChild(row);
   });
 
-  document.getElementById('predResult').classList.add('visible');
+  document.getElementById("predResult").classList.add("visible");
 
-  // Animate bars after render
+  // Animate bars
   requestAnimationFrame(() => {
-    document.querySelectorAll('.bar-fill').forEach(el => {
-      el.style.width = el.dataset.w + '%';
+    document.querySelectorAll(".bar-fill").forEach(el => {
+      el.style.width = el.dataset.w + "%";
     });
   });
 }
@@ -724,4 +578,8 @@ function showResult(data) {
 function capitalize(str) {
   return str ? str.charAt(0).toUpperCase() + str.slice(1) : str;
 }
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 </script>
+</body>
+</html>
